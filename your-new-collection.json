@@ -1,0 +1,912 @@
+[
+  {
+    "_id": {
+      "$oid": "6835bb4e11314c601426ec4f"
+    },
+    "credit": 2,
+    "status": 0,
+    "sort": 1,
+    "tags": [],
+    "name": "AWS Nova Canvas",
+    "displayName": "Premium",
+    "provider": "AWS Bedrock",
+    "type": "GenAI",
+    "version": "1.0",
+    "variation": 1,
+    "characterLimit": 256,
+    "card": "https://docs.aws.amazon.com/ai/responsible-ai/nova-canvas/overview.html",
+    "description": "1K Video, 720P, Results in 5 seconds",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/premium1.png",
+    "service": "text-to-image",
+    "createdAt": {
+      "$date": "2025-05-27T13:17:02.828Z"
+    },
+    "updatedAt": {
+      "$date": "2025-06-02T13:17:08.307Z"
+    },
+    "__v": 0,
+    "settings": {
+      "negative_prompt": {
+        "title": "Negative Prompt",
+        "values": [],
+        "default": "1024",
+        "type": "text"
+      },
+      "aspect_ratio": {
+        "title": "Aspect Ratio",
+        "values": [
+          "1:1",
+          "4:5",
+          "3:4",
+          "2:3",
+          "9:16",
+          "1:2",
+          "1:3",
+          "1:4",
+          "5:4",
+          "16:9",
+          "4:3",
+          "3:2",
+          "2:1",
+          "3:1",
+          "4:1"
+        ],
+        "credits": {
+          "1:1": 1,
+          "4:5": 1,
+          "3:4": 1,
+          "2:3": 1,
+          "9:16": 1,
+          "1:2": 1,
+          "1:3": 1,
+          "1:4": 1,
+          "5:4": 1,
+          "16:9": 1,
+          "4:3": 1,
+          "3:2": 1,
+          "2:1": 1,
+          "3:1": 1,
+          "4:1": 1
+        },
+        "default": "1:1",
+        "type": "select"
+      }
+    },
+    "isDefault": false,
+    "isPopular": false,
+    "parameters": {}
+  },
+  {
+    "_id": {
+      "$oid": "6835bc2f11314c601426ec65"
+    },
+    "credit": 1,
+    "status": 0,
+    "sort": 1,
+    "tags": [],
+    "name": "Flux Fast Schnell",
+    "displayName": "Fast",
+    "provider": "Replicate",
+    "type": "GenAI",
+    "version": "1.0",
+    "variation": 2,
+    "characterLimit": 256,
+    "card": "https://replicate.com/black-forest-labs/flux-schnell",
+    "description": "Lightning-quick; ideal for rapid drafts and bulk variations",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/premium1.png",
+    "service": "text-to-image",
+    "createdAt": {
+      "$date": "2025-05-27T13:20:47.905Z"
+    },
+    "updatedAt": {
+      "$date": "2025-05-29T12:57:12.790Z"
+    },
+    "__v": 0,
+    "settings": {
+      "aspect_ratio": {
+        "title": "Aspect Ratio",
+        "values": [
+          "1:1",
+          "16:9",
+          "21:9",
+          "3:2",
+          "2:3",
+          "4:5",
+          "5:4",
+          "3:4",
+          "4:3",
+          "9:16"
+        ],
+        "credits": {
+          "1:1": 1,
+          "16:9": 1,
+          "21:9": 1,
+          "3:2": 1,
+          "2:3": 1,
+          "4:5": 1,
+          "5:4": 1,
+          "3:4": 1,
+          "4:3": 1,
+          "9:16": 1
+        },
+        "default": "1:1",
+        "type": "select"
+      },
+      "negative_prompt": {
+        "title": "Negative Prompt",
+        "values": [],
+        "default": "0",
+        "type": "text"
+      }
+    },
+    "isDefault": false,
+    "isPopular": false,
+    "parameters": {}
+  },
+  {
+    "_id": {
+      "$oid": "6835bc8111314c601426ec6b"
+    },
+    "credit": 1,
+    "status": 0,
+    "sort": 1,
+    "tags": [],
+    "name": "Luma Photon Flash",
+    "displayName": "Standard",
+    "provider": "Replicate",
+    "type": "GenAI",
+    "version": "1.2.0",
+    "variation": 3,
+    "characterLimit": 5000,
+    "card": "https://replicate.com/luma/photon-flash",
+    "description": "Solid  model that balances speed and clarity for everyday visuals",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/standard1.png",
+    "service": "text-to-image",
+    "createdAt": {
+      "$date": "2025-05-27T13:22:09.552Z"
+    },
+    "updatedAt": {
+      "$date": "2025-05-29T12:57:35.217Z"
+    },
+    "__v": 0,
+    "settings": {
+      "aspect_ratio": {
+        "title": "Aspect Ratio",
+        "values": [
+          "16:9",
+          "1:1",
+          "3:4",
+          "4:3",
+          "9:16",
+          "9:21",
+          "21:9"
+        ],
+        "credits": {
+          "16:9": 1,
+          "1:1": 1,
+          "3:4": 1,
+          "4:3": 1,
+          "9:16": 1,
+          "9:21": 1,
+          "21:9": 1
+        },
+        "default": "16:9",
+        "type": "select"
+      },
+      "negative_prompt": {
+        "title": "Negative Prompt",
+        "values": [],
+        "default": "0",
+        "type": "text"
+      }
+    },
+    "isDefault": false,
+    "isPopular": false,
+    "parameters": {}
+  },
+  {
+    "_id": {
+      "$oid": "6835bcd311314c601426ec71"
+    },
+    "credit": 2,
+    "status": 0,
+    "sort": 1,
+    "tags": [],
+    "name": "Luma Photon",
+    "displayName": "Creative",
+    "provider": "Replicate",
+    "type": "GenAI",
+    "version": "1.2.0",
+    "variation": 4,
+    "characterLimit": 5000,
+    "card": "https://replicate.com/luma/photon",
+    "description": "Bolder colours, freer composition and 2 K output for concept art or hero shots.",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/creative.png",
+    "service": "text-to-image",
+    "createdAt": {
+      "$date": "2025-05-27T13:23:31.200Z"
+    },
+    "updatedAt": {
+      "$date": "2025-05-29T12:58:27.565Z"
+    },
+    "__v": 0,
+    "settings": {
+      "aspect_ratio": {
+        "title": "Aspect Ratio",
+        "values": [
+          "1:1",
+          "3:4",
+          "4:3",
+          "9:16",
+          "16:9",
+          "9:21",
+          "21:9"
+        ],
+        "credits": {
+          "1:1": 1,
+          "3:4": 1,
+          "4:3": 1,
+          "9:16": 1,
+          "16:9": 1,
+          "9:21": 1,
+          "21:9": 1
+        },
+        "default": "16:9",
+        "type": "select"
+      },
+      "negative_prompt": {
+        "title": "Negative Prompt",
+        "values": [],
+        "default": "0",
+        "type": "text"
+      }
+    },
+    "isDefault": false,
+    "isPopular": false,
+    "parameters": {}
+  },
+  {
+    "_id": {
+      "$oid": "6835bd2f11314c601426ec77"
+    },
+    "credit": 20,
+    "status": 0,
+    "sort": 1,
+    "tags": [],
+    "name": "AWS Nova Reel",
+    "displayName": "Premium",
+    "provider": "AWS Bedrock",
+    "type": "GenAI",
+    "version": "1.1",
+    "variation": 1,
+    "characterLimit": 256,
+    "card": "https://docs.aws.amazon.com/ai/responsible-ai/nova-reel/overview.html",
+    "description": "Cinematic 6-sec clips; pick for flagship adverts or show reels",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/premium1.png",
+    "service": "text-to-video",
+    "createdAt": {
+      "$date": "2025-05-27T13:25:03.144Z"
+    },
+    "updatedAt": {
+      "$date": "2025-06-02T14:38:17.169Z"
+    },
+    "__v": 0,
+    "settings": {
+      "negative_prompt": {
+        "title": "Negative Prompt",
+        "values": [],
+        "default": "0",
+        "type": "text"
+      }
+    },
+    "isDefault": false,
+    "isPopular": false,
+    "parameters": {}
+  },
+  {
+    "_id": {
+      "$oid": "6835be4e11314c601426ec7d"
+    },
+    "credit": 15,
+    "status": 0,
+    "sort": 1,
+    "tags": [],
+    "name": "pikav2.2text-to-video",
+    "displayName": "Standard",
+    "provider": "Fal.ai",
+    "type": "GenAI",
+    "version": "2.2",
+    "variation": 3,
+    "characterLimit": 1024,
+    "card": "https://fal.ai/models/fal-ai/pika/v2.2/text-to-video",
+    "description": "Cost-savvy videos—perfect for social teasers",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/standard1.png",
+    "service": "text-to-video",
+    "createdAt": {
+      "$date": "2025-05-27T13:29:50.250Z"
+    },
+    "updatedAt": {
+      "$date": "2025-06-02T14:38:17.169Z"
+    },
+    "__v": 0,
+    "settings": {
+      "duration ": {
+        "title": "Duration",
+        "values": [
+          "5",
+          "10"
+        ],
+        "credits": {
+          "5": 1,
+          "10": 1
+        },
+        "default": "5",
+        "type": "select"
+      },
+      "negative_prompt": {
+        "title": "Negative Prompt",
+        "values": [],
+        "default": "1024",
+        "type": "text"
+      }
+    },
+    "isDefault": false,
+    "isPopular": false,
+    "parameters": {}
+  },
+  {
+    "_id": {
+      "$oid": "6835c36911314c601426ec83"
+    },
+    "credit": 20,
+    "status": 0,
+    "sort": 1,
+    "tags": [],
+    "name": "kling-video/v1.6/pro/text-to-video",
+    "displayName": "Premium",
+    "provider": "Fal.ai",
+    "type": "GenAI",
+    "version": "1.6",
+    "variation": 4,
+    "characterLimit": 1024,
+    "card": "https://fal.ai/models/fal-ai/kling-video/v1.6/pro/text-to-video",
+    "description": "High-detail clip  for premium campaigns",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/premium1.png",
+    "service": "text-to-video",
+    "createdAt": {
+      "$date": "2025-05-27T13:51:37.681Z"
+    },
+    "updatedAt": {
+      "$date": "2025-06-02T14:38:17.169Z"
+    },
+    "__v": 0,
+    "settings": {
+      "aspect_ration": {
+        "title": "Aspect Ratio",
+        "values": [
+          "16:9",
+          "9:16",
+          "1:1"
+        ],
+        "credits": {
+          "16:9": 1,
+          "9:16": 1,
+          "1:1": 1
+        },
+        "default": "16:9",
+        "type": "select"
+      },
+      "negative_prompt": {
+        "title": "Negative Prompt",
+        "values": [],
+        "default": "1024",
+        "type": "text"
+      },
+      "duration": {
+        "title": "Duration",
+        "values": [
+          "5",
+          "10"
+        ],
+        "credits": {
+          "5": 1,
+          "10": 1
+        },
+        "default": "5",
+        "type": "select"
+      }
+    },
+    "isDefault": false,
+    "isPopular": false,
+    "parameters": {}
+  },
+  {
+    "_id": {
+      "$oid": "6835c3c711314c601426ec89"
+    },
+    "credit": 10,
+    "status": 0,
+    "sort": 1,
+    "tags": [],
+    "name": "kling-video/v1.6/standard/text-to-video",
+    "displayName": "Standard",
+    "provider": "Fal.ai",
+    "type": "GenAI",
+    "version": "1.6",
+    "variation": 5,
+    "characterLimit": 1024,
+    "card": "https://fal.ai/models/fal-ai/kling-video/v1.6/standard/text-to-video",
+    "description": "Same vibe at half the price; great for drafts and everyday content",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/standard1.png",
+    "service": "text-to-video",
+    "createdAt": {
+      "$date": "2025-05-27T13:53:11.941Z"
+    },
+    "updatedAt": {
+      "$date": "2025-06-02T14:38:17.169Z"
+    },
+    "__v": 0,
+    "settings": {
+      "aspect_ratio": {
+        "title": "Aspect Ratio",
+        "values": [
+          "16:9",
+          "9:16",
+          "1:1"
+        ],
+        "credits": {
+          "16:9": 1,
+          "9:16": 1,
+          "1:1": 1
+        },
+        "default": "16:9",
+        "type": "select"
+      },
+      "duration": {
+        "title": "Duration",
+        "values": [
+          "5",
+          "10"
+        ],
+        "credits": {
+          "5": 1,
+          "10": 1
+        },
+        "default": "5",
+        "type": "select"
+      },
+      "negative_prompt": {
+        "title": "Negative Prompt",
+        "values": [],
+        "default": "1024",
+        "type": "text"
+      }
+    },
+    "isDefault": false,
+    "isPopular": false,
+    "parameters": {}
+  },
+  {
+    "_id": {
+      "$oid": "6835c41a11314c601426ec8f"
+    },
+    "credit": 19,
+    "status": 0,
+    "sort": 1,
+    "tags": [],
+    "name": "AWS Amazon-nova-reel-1-0",
+    "displayName": "Standard",
+    "provider": "AWS Bedrock",
+    "type": "GenAI",
+    "version": "1",
+    "variation": 1,
+    "characterLimit": 1024,
+    "card": "https://docs.aws.amazon.com/ai/responsible-ai/nova-canvas/overview.html",
+    "description": "One-click conversion that adds smooth camera moves to stills for polished results. Useful to demonstrate your product.",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/standard1.png",
+    "service": "image-to-video",
+    "createdAt": {
+      "$date": "2025-05-27T13:54:34.648Z"
+    },
+    "updatedAt": {
+      "$date": "2025-05-29T13:06:59.168Z"
+    },
+    "__v": 0,
+    "settings": {
+      "negative_prompt": {
+        "title": "Negative Prompt",
+        "values": [],
+        "default": "1024",
+        "type": "text"
+      }
+    },
+    "isDefault": false,
+    "isPopular": false,
+    "parameters": {}
+  },
+  {
+    "_id": {
+      "$oid": "6835c48d11314c601426ec95"
+    },
+    "credit": 17,
+    "status": 0,
+    "sort": 1,
+    "tags": [],
+    "name": "Kling/v1.6/pro",
+    "displayName": "Profissional",
+    "provider": "Fal.ai",
+    "type": "GenAI",
+    "version": "1.6",
+    "variation": 2,
+    "characterLimit": 1024,
+    "card": "https://fal.ai/models/fal-ai/kling-video/v1.6/pro/image-to-video",
+    "description": "Professional  motion with dynamic angles for promo-ready output",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/premium1.png",
+    "service": "image-to-video",
+    "createdAt": {
+      "$date": "2025-05-27T13:56:29.775Z"
+    },
+    "updatedAt": {
+      "$date": "2025-05-29T12:48:36.629Z"
+    },
+    "__v": 0,
+    "settings": {
+      "aspect_ratio": {
+        "title": "Aspect Ratio",
+        "values": [
+          "16:9",
+          "9:16",
+          "1:1"
+        ],
+        "credits": {
+          "16:9": 1,
+          "9:16": 1,
+          "1:1": 1
+        },
+        "default": "16:9",
+        "type": "select"
+      },
+      "negative_prompt": {
+        "title": "Negative Prompt",
+        "values": [],
+        "default": "1024",
+        "type": "text"
+      },
+      "duration": {
+        "title": "Duration",
+        "values": [
+          "5",
+          "10"
+        ],
+        "credits": {
+          "5": 1,
+          "10": 1
+        },
+        "default": "5",
+        "type": "select"
+      }
+    },
+    "isDefault": false,
+    "isPopular": false,
+    "parameters": {}
+  },
+  {
+    "_id": {
+      "$oid": "683838fddcc9785310c538cf"
+    },
+    "credit": 10,
+    "status": 0,
+    "isPopular": false,
+    "isDefault": false,
+    "sort": 1,
+    "tags": [],
+    "settings": {
+      "duration": {
+        "title": "Duration",
+        "values": [
+          "5",
+          "10"
+        ],
+        "credits": {
+          "5": 1,
+          "10": 1
+        },
+        "default": "5",
+        "type": "select"
+      },
+      "negative_prompt": {
+        "title": "Negative Prompt",
+        "values": [],
+        "default": "1024",
+        "type": "text"
+      }
+    },
+    "name": "Pika/v2/turbo",
+    "displayName": "Fast",
+    "provider": "Fal.ai",
+    "type": "GenAi",
+    "version": "2",
+    "variation": 3,
+    "characterLimit": 1024,
+    "card": "https://fal.ai/models/fal-ai/pika/v2/turbo/image-to-video",
+    "description": "Model suport dynamic duration, we need to evaluate the cost for this",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/fast.png",
+    "service": "image-to-video",
+    "createdAt": {
+      "$date": "2025-05-29T10:37:49.097Z"
+    },
+    "updatedAt": {
+      "$date": "2025-05-29T13:08:54.797Z"
+    },
+    "__v": 0,
+    "parameters": {}
+  },
+  {
+    "_id": {
+      "$oid": "6838396edcc9785310c538d5"
+    },
+    "credit": 15,
+    "status": 0,
+    "isPopular": false,
+    "isDefault": false,
+    "sort": 1,
+    "tags": [],
+    "settings": {
+      "aspect_ratio": {
+        "title": "Aspect Ratio",
+        "values": [
+          "16:9",
+          "9:16",
+          "1:1"
+        ],
+        "credits": {
+          "16:9": 1,
+          "9:16": 1,
+          "1:1": 1
+        },
+        "default": "16:9",
+        "type": "select"
+      },
+      "duration ": {
+        "title": "Duration",
+        "values": [
+          "5",
+          "10"
+        ],
+        "credits": {
+          "5": 1,
+          "10": 1
+        },
+        "default": "5",
+        "type": "select"
+      },
+      "negative_prompt": {
+        "title": "Negative Prompt",
+        "values": [],
+        "default": "1024",
+        "type": "text"
+      }
+    },
+    "name": "Kling/v1.6/standard",
+    "displayName": "Standard",
+    "provider": "Fal.ai",
+    "type": "GenAi",
+    "version": "1.6",
+    "variation": 14,
+    "characterLimit": 1024,
+    "card": "https://fal.ai/models/fal-ai/kling-video/v1.6/standard/image-to-video",
+    "description": "Mid-tier pick balancing cost and quality for routine posts.",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/standard1.png",
+    "service": "image-to-video",
+    "createdAt": {
+      "$date": "2025-05-29T10:39:42.166Z"
+    },
+    "updatedAt": {
+      "$date": "2025-05-29T12:51:38.754Z"
+    },
+    "__v": 0,
+    "parameters": {}
+  },
+  {
+    "_id": {
+      "$oid": "683839bedcc9785310c538db"
+    },
+    "credit": 15,
+    "status": 0,
+    "isPopular": false,
+    "isDefault": false,
+    "sort": 1,
+    "tags": [],
+    "settings": {
+      "duration": {
+        "title": "Duration",
+        "values": [
+          "5",
+          "10"
+        ],
+        "credits": {
+          "5": 1,
+          "10": 1
+        },
+        "default": "5",
+        "type": "select"
+      },
+      "negative_prompt": {
+        "title": "Negative Prompt",
+        "values": [],
+        "default": "0",
+        "type": "text"
+      }
+    },
+    "name": "fal-ai/kling-video/v1/standard/effects",
+    "displayName": "Creative",
+    "provider": "Fal.ai",
+    "type": "GenAi",
+    "version": "1.0",
+    "variation": 5,
+    "characterLimit": 1024,
+    "card": "https://fal.ai/models/fal-ai/kling-video/v1/standard/effects",
+    "description": "Produce eye-catching VFX onto your image for scroll-stopping reels",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/creative.png",
+    "service": "image-to-video",
+    "createdAt": {
+      "$date": "2025-05-29T10:41:02.638Z"
+    },
+    "updatedAt": {
+      "$date": "2025-05-29T13:10:33.062Z"
+    },
+    "__v": 0,
+    "parameters": {}
+  },
+  {
+    "_id": {
+      "$oid": "68383ac2dcc9785310c538e1"
+    },
+    "credit": 1,
+    "status": 0,
+    "isPopular": false,
+    "isDefault": false,
+    "sort": 1,
+    "tags": [],
+    "settings": {},
+    "name": "ghibli-easycontrol",
+    "displayName": "Standard",
+    "provider": "Replicate",
+    "type": "GenAi",
+    "version": "6c4785d7",
+    "variation": 1,
+    "characterLimit": 1024,
+    "card": "https://replicate.com/danila013/ghibli-easycontrol",
+    "description": "Instantly wraps photos in pastel, Ghibli-style charm for whimsical branding or storytelling",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/standard1.png",
+    "service": "image-to-image",
+    "createdAt": {
+      "$date": "2025-05-29T10:45:22.231Z"
+    },
+    "updatedAt": {
+      "$date": "2025-05-29T10:45:22.231Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "68383b65dcc9785310c538ea"
+    },
+    "credit": 2,
+    "status": 0,
+    "isPopular": false,
+    "isDefault": false,
+    "sort": 1,
+    "tags": [],
+    "settings": {},
+    "name": "AWS Nova Canvas/",
+    "displayName": "Fast",
+    "provider": "AWS Bedrock",
+    "type": "GenAi",
+    "version": "1.0",
+    "variation": 1,
+    "characterLimit": 1024,
+    "card": "https://docs.aws.amazon.com/ai/responsible-ai/nova-canvas/overview.html",
+    "description": "Premium  tool for expanding, replacing or fixing areas with print-grade fidelity",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/fast.png",
+    "service": "image-to-image",
+    "createdAt": {
+      "$date": "2025-05-29T10:48:05.352Z"
+    },
+    "updatedAt": {
+      "$date": "2025-05-29T10:48:05.352Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "68383bc9dcc9785310c538f0"
+    },
+    "credit": 111,
+    "status": 0,
+    "isPopular": false,
+    "isDefault": false,
+    "sort": 1,
+    "tags": [],
+    "settings": {},
+    "name": "Lama",
+    "displayName": "Fast",
+    "provider": "Replicate",
+    "type": "GenAi",
+    "version": "2b91ca23",
+    "variation": 2,
+    "characterLimit": 1024,
+    "card": "https://fal.ai/models/fal-ai/finegrain-eraser/mask",
+    "description": "Fast, low-cost in-painting that cleanly removes or patches objects for everyday edits",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/fast.png",
+    "service": "image-to-image",
+    "createdAt": {
+      "$date": "2025-05-29T10:49:45.482Z"
+    },
+    "updatedAt": {
+      "$date": "2025-05-29T10:49:45.482Z"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "68383c28dcc9785310c538f6"
+    },
+    "credit": 111,
+    "status": 0,
+    "isPopular": false,
+    "isDefault": false,
+    "sort": 1,
+    "tags": [],
+    "settings": {},
+    "name": "Express eraser",
+    "displayName": "Professional",
+    "provider": "Fal.ai",
+    "type": "GenAi",
+    "version": "Express",
+    "variation": 3,
+    "characterLimit": 1024,
+    "card": "https://fal.ai/models/fal-ai/finegrain-eraser/mask",
+    "description": "Fine-grain  eraser for professional clean-ups without losing texture",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/fast.png",
+    "service": "image-to-image",
+    "createdAt": {
+      "$date": "2025-05-29T10:51:20.472Z"
+    },
+    "updatedAt": {
+      "$date": "2025-05-29T10:53:02.494Z"
+    },
+    "__v": 0,
+    "parameters": {}
+  },
+  {
+    "_id": {
+      "$oid": "68383c82dcc9785310c538fc"
+    },
+    "credit": 1,
+    "status": 0,
+    "isPopular": false,
+    "isDefault": false,
+    "sort": 1,
+    "tags": [],
+    "settings": {},
+    "name": "AWS Titan",
+    "displayName": "Standard",
+    "provider": "AWS Bedrock",
+    "type": "GenAi",
+    "version": "G1V2",
+    "variation": 1,
+    "characterLimit": 512,
+    "card": "https://docs.aws.amazon.com/ai/responsible-ai/titan-image-generator/overview.html",
+    "description": "Crisp,  cut-outs that prep any subject for e-commerce, slides or social posts in seconds",
+    "icon": "https://d2y0wswd79h3fh.cloudfront.net/resources/ai_icon/standard1.png",
+    "service": "image-to-image",
+    "createdAt": {
+      "$date": "2025-05-29T10:52:50.306Z"
+    },
+    "updatedAt": {
+      "$date": "2025-05-29T10:52:50.306Z"
+    },
+    "__v": 0
+  }
+]
