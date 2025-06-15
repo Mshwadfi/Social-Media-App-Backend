@@ -2,19 +2,30 @@ const express = require("express");
 
 const app = express();
 
-app.get("/users", (req, res) => {
-  res.send("here the users data yu requested");
-});
+app.get(
+  "/users",
+  (req, res, next) => {
+    console.log("route handler 1");
+    // res.send("users fetched successfully");
+    next();
+  },
+  (req, res, next) => {
+    console.log("route handler 2");
+    // res.send("users fetched successfully!");
+    next();
+  },
+  (req, res, next) => {
+    console.log("route handler 2");
+    // res.send("users fetched successfully!");
+    next();
+  },
+  (req, res, next) => {
+    console.log("route handler 2");
+    res.send("users fetched successfully!");
+    // next();
+  }
+);
 
-app.post("/users", (req, res) => {
-  console.log("processing the request...");
-  console.log("validating the request data...");
-  console.log("saving data to DB");
-
-  res.send("user created successfully");
-});
-
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log("server is running on port 3000");
+app.listen(3000, () => {
+  console.log("server is running on prot 3000");
 });
