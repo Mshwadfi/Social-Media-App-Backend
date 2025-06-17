@@ -1,12 +1,12 @@
 {
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "mongoose": "^8.15.2"
   },
   "name": "dev-social",
   "version": "1.0.0",
   "description": "social platform for developers",
   "main": "app.js",
-  "devDependencies": {},
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js"
