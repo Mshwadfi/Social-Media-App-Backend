@@ -2,14 +2,60 @@ const express = require("express");
 const connectDB = require("./config/database");
 const app = express();
 const User = require("./models/user");
+const { hash } = require("bcrypt");
 
 app.use(express.json());
 // sign up user
 app.post("/signUp", async (req, res) => {
   console.log(req.body);
-  const user = new User(req.body);
-  await user.save(user);
-  res.send("user created successfully!");
+  const existingUser = await User.findOne({ email: req.body.email });
+  if (existingUser) return res.status(400).send("email Already Exist");
+  try {
+    const { firstName, lastName, age, gender, email, password } = req.body;
+    const encryptedPassword = await hash(password, 10);
+    const user = new User({
+      firstName,
+      lastName,
+      age,
+      gender,
+      email,
+      password: encryptedPassword,
+    });
+    await user.save();
+    res.send("user created successfully!");
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+// login
+const bcrypt = require("bcrypt");
+
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: "Email and password are required" });
+  }
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordMatch) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    const userObject = user.toObject();
+    delete userObject.password;
+    res.status(200).json({ message: "Login successful", user: userObject });
+  } catch (error) {
+    console.error("Login error:", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 // get user by id
@@ -44,12 +90,12 @@ app.get("/users", async (req, res) => {
 });
 
 // update user
-app.patch("/users/:id", async (req, res) => {
-  const userId = req.params.id;
+app.patch("/users/:email", async (req, res) => {
+  const email = req.params.email;
   const data = req.body;
-  console.log(req.body, req.params.id);
+  console.log(req.body, req.query.email);
   try {
-    const updatedUser = await User.findByIdAndUpdate(userId, data, {
+    const updatedUser = await User.findOneAndUpdate({ email: email }, data, {
       new: true,
     });
     if (updatedUser) {
