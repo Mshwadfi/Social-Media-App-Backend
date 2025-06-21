@@ -5,9 +5,12 @@ const User = require("./models/user");
 const { hash } = require("bcrypt");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { authMiddleWare } = require("./middlewares/auth");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 app.use(express.json());
+app.use(cookieParser());
 // sign up user
 app.post("/signUp", async (req, res) => {
   console.log(req.body);
@@ -137,15 +140,9 @@ app.delete("/users/:id", async (req, res) => {
   }
 });
 // get user profile
-app.get("/profile", async (req, res) => {
-  const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.split(" ")[1]; // ✅ Correct: get the actual token part
-  if (!token) {
-    return res.status(401).json({ error: "Access denied. No token provided." });
-  }
+app.get("/profile", authMiddleWare, async (req, res) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded._id).select("-password");
+    const { user } = req;
     if (!user) res.status(401).send("user not found");
     res.send({ user });
   } catch (error) {
