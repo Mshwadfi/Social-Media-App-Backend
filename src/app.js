@@ -3,6 +3,9 @@ const connectDB = require("./config/database");
 const app = express();
 const User = require("./models/user");
 const { hash } = require("bcrypt");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 app.use(express.json());
 // sign up user
@@ -28,7 +31,6 @@ app.post("/signUp", async (req, res) => {
   }
 });
 // login
-const bcrypt = require("bcrypt");
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -49,6 +51,15 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
+    const token = jwt.sign(
+      {
+        email: user.email,
+        _id: user._id,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+    res.cookie("token", token);
     const userObject = user.toObject();
     delete userObject.password;
     res.status(200).json({ message: "Login successful", user: userObject });
@@ -64,7 +75,7 @@ app.get("/users/:id", async (req, res) => {
   console.log(req.params);
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select("-password");
     if (user.length !== 0) {
       res.status(200).send(user);
     } else {
@@ -77,7 +88,7 @@ app.get("/users/:id", async (req, res) => {
 //get All users
 app.get("/users", async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().select("-password");
     console.log(users);
     if (users.length === 0) {
       res.status(200).send("there is no users");
@@ -125,7 +136,22 @@ app.delete("/users/:id", async (req, res) => {
     res.status(500).send("internal server error");
   }
 });
-
+// get user profile
+app.get("/profile", async (req, res) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(" ")[1]; // ✅ Correct: get the actual token part
+  if (!token) {
+    return res.status(401).json({ error: "Access denied. No token provided." });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded._id).select("-password");
+    if (!user) res.status(401).send("user not found");
+    res.send({ user });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
 connectDB()
   .then(() => {
     console.log("connected to db!");
