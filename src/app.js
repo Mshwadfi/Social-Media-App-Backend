@@ -48,20 +48,13 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    const isPasswordMatch = await user.comparePassword(password);
 
     if (!isPasswordMatch) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    const token = jwt.sign(
-      {
-        email: user.email,
-        _id: user._id,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    const token = user.generateToken();
     res.cookie("token", token);
     const userObject = user.toObject();
     delete userObject.password;
@@ -72,73 +65,6 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// get user by id
-app.get("/users/:id", async (req, res) => {
-  const userId = req.params.id;
-  console.log(req.params);
-
-  try {
-    const user = await User.findById(userId).select("-password");
-    if (user.length !== 0) {
-      res.status(200).send(user);
-    } else {
-      res.status(404).send("user not found");
-    }
-  } catch (error) {
-    res.send("something went wrong");
-  }
-});
-//get All users
-app.get("/users", async (req, res) => {
-  try {
-    const users = await User.find().select("-password");
-    console.log(users);
-    if (users.length === 0) {
-      res.status(200).send("there is no users");
-    } else {
-      res.status(200).send(users);
-    }
-  } catch (error) {
-    res.status(404).send("not found");
-  }
-});
-
-// update user
-app.patch("/users/:email", async (req, res) => {
-  const email = req.params.email;
-  const data = req.body;
-  console.log(req.body, req.query.email);
-  try {
-    const updatedUser = await User.findOneAndUpdate({ email: email }, data, {
-      new: true,
-    });
-    if (updatedUser) {
-      res.status(200).send({
-        message: "user updated successfully",
-        user: updatedUser,
-      });
-    } else {
-      res.status(404).send("user not found");
-    }
-  } catch (error) {
-    res.status(500).send("internal server error");
-  }
-});
-
-// delete user by id
-app.delete("/users/:id", async (req, res) => {
-  const userId = req.params.id;
-  console.log(req.body);
-  try {
-    const user = await User.findByIdAndDelete(userId);
-    if (!user) {
-      return res.status(404).send("User not found");
-    }
-    res.send("User deleted successfully");
-  } catch (error) {
-    res.status(500).send("internal server error");
-  }
-});
 // get user profile
 app.get("/profile", authMiddleWare, async (req, res) => {
   try {
