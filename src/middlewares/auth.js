@@ -10,7 +10,7 @@ const authMiddleWare = async (req, res, next) => {
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const { _id } = decoded;
-    const user = await User.findById(_id).select("-password");
+    const user = await User.findById(_id);
     if (!user) return res.status(401).send("invalid Token");
     req.user = user;
     next();
