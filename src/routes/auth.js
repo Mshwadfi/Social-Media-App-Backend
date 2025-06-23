@@ -74,8 +74,8 @@ authRouter.post("/logout", async (req, res) => {
   }
 });
 
-// reset Password
-authRouter.post("/resetpassword", authMiddleWare, async (req, res) => {
+// change Password -> for logged in user
+authRouter.post("/change-password", authMiddleWare, async (req, res) => {
   try {
     const { currentPassword, newPassword, confirmPassword } = req.body;
     const user = req.user;
