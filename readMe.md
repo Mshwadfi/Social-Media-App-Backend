@@ -38,27 +38,27 @@ A complete backend API for a social media platform featuring user authentication
 
 | Endpoint                | Method | Description             | Status         |
 | ----------------------- | ------ | ----------------------- | -------------- |
-| `/auth/register`        | POST   | Register new user       | ⬜ Not Started |
-| `/auth/login`           | POST   | User login              | ⬜ Not Started |
+| `/register`             | POST   | Register new user       | ✅ Done        |
+| `/login`                | POST   | User login              | ✅ Done        |
 | `/auth/refresh-token`   | POST   | Refresh access token    | ⬜ Not Started |
-| `/auth/logout`          | POST   | User logout             | ⬜ Not Started |
+| `/logout`               | POST   | User logout             | ✅ Done        |
 | `/auth/forgot-password` | POST   | Initiate password reset | ⬜ Not Started |
 | `/auth/reset-password`  | POST   | Complete password reset | ⬜ Not Started |
 
 ### User Profile 👤
 
-| Endpoint             | Method | Description                 | Status         |
-| -------------------- | ------ | --------------------------- | -------------- |
-| `/users/me`          | GET    | Get current user profile    | ⬜ Not Started |
-| `/users/:userId`     | GET    | Get user profile by ID      | ⬜ Not Started |
-| `/users/me`          | PUT    | Update current user profile | ⬜ Not Started |
-| `/users/me/password` | PUT    | Change password             | ⬜ Not Started |
+| Endpoint           | Method | Description                 | Status         |
+| ------------------ | ------ | --------------------------- | -------------- |
+| `/profile`         | GET    | Get current user profile    | ✅ Done        |
+| `/users/:userId`   | GET    | Get user profile by ID      | ⬜ Not Started |
+| `/users/me`        | PUT    | Update current user profile | ⬜ Not Started |
+| `/change-password` | PUT    | Change password             | ✅ Done        |
 
 ### Connections 🤝
 
 | Endpoint                               | Method | Description               | Status         |
 | -------------------------------------- | ------ | ------------------------- | -------------- |
-| `/users/:userId/request`               | POST   | Send connection request   | ⬜ Not Started |
+| `/request`                             | POST   | Send connection request   | ✅ Done        |
 | `/users/me/requests/sent`              | GET    | Get sent requests         | ⬜ Not Started |
 | `/users/me/requests/received`          | GET    | Get received requests     | ⬜ Not Started |
 | `/users/me/requests/:requestId/accept` | PUT    | Accept connection request | ⬜ Not Started |
