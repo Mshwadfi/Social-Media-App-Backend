@@ -61,7 +61,7 @@ A complete backend API for a social media platform featuring user authentication
 | `/request`                             | POST   | Send connection request   | ✅ Done        |
 | `/users/me/requests/sent`              | GET    | Get sent requests         | ⬜ Not Started |
 | `/users/me/requests/received`          | GET    | Get received requests     | ⬜ Not Started |
-| `/users/me/requests/:requestId/accept` | PUT    | Accept connection request | ⬜ Not Started |
+| `//request/:requestId/accept`          | POST   | Accept connection request | ✅ Done        |
 | `/users/me/requests/:requestId/reject` | PUT    | Reject connection request | ⬜ Not Started |
 | `/users/me/connections`                | GET    | Get all connections       | ⬜ Not Started |
 | `/users/me/connections/:userId`        | DELETE | Remove connection         | ⬜ Not Started |

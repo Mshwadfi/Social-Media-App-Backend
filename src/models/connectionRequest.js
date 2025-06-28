@@ -6,7 +6,7 @@ const connectionRequestSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
-    recieverId: {
+    receiverId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       validate: {
