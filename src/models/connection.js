@@ -7,7 +7,7 @@ const connectionSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: function (value) {
-          return mongoose.Schema.Types.ObjectId.isvalid(value);
+          return mongoose.Types.ObjectId.isValid(value);
         },
         message: "Invalid ObjectId For User1",
       },
@@ -17,7 +17,7 @@ const connectionSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: function (value) {
-          return mongoose.Schema.Types.ObjectId.isvalid(value);
+          return mongoose.Types.ObjectId.isValid(value);
         },
         message: "Invalid ObjectId For User2",
       },

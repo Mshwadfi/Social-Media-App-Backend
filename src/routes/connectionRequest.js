@@ -89,6 +89,8 @@ connectionRequestRouter.post(
   "/request/:id/accept",
   authMiddleWare,
   async (req, res) => {
+    //start a session for transaction so (accept request & creating )a connection success together or fail together
+    // if accept request success but creating connection fail then we have to rollback the accept request and vice versa
     const session = await mongoose.startSession();
     session.startTransaction();
 
@@ -189,4 +191,83 @@ connectionRequestRouter.post(
   }
 );
 
+//reject connection request
+connectionRequestRouter.post(
+  "/request/:id/reject",
+  authMiddleWare,
+  async (req, res) => {
+    try {
+      const { user } = req;
+      const { id: requestId } = req.params;
+
+      if (!mongoose.Types.ObjectId.isValid(requestId)) {
+        return res
+          .status(400)
+          .json({ success: false, error: "Invalid request ID" });
+      }
+
+      const request = await ConnectionRequest.findById(requestId);
+      if (!request) {
+        return res
+          .status(404)
+          .json({ success: false, error: "Request not found" });
+      }
+
+      if (!request.receiverId.equals(user._id)) {
+        return res
+          .status(403)
+          .json({ success: false, error: "Unauthorized action" });
+      }
+
+      const senderExists = await User.exists({ _id: request.senderId });
+      if (!senderExists) {
+        return res
+          .status(404)
+          .json({ success: false, error: "Sender not found" });
+      }
+
+      if (request.status !== "pending") {
+        return res.status(400).json({
+          success: false,
+          error: "Request has already been processed",
+        });
+      }
+
+      // Check if connection already exists
+      const existingConnection = await Connection.findOne({
+        $or: [
+          { user1: request.senderId, user2: request.receiverId },
+          { user1: request.receiverId, user2: request.senderId },
+        ],
+      });
+
+      if (existingConnection) {
+        return res.status(409).json({
+          success: false,
+          error: "Users are already connected",
+        });
+      }
+
+      const updatedRequest = await ConnectionRequest.findOneAndUpdate(
+        { _id: requestId, status: "pending" },
+        { status: "rejected" },
+        { new: true }
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "Request rejected successfully",
+        data: {
+          request: updatedRequest,
+        },
+      });
+    } catch (error) {
+      console.error("Reject Error:", error);
+      return res.status(500).json({
+        success: false,
+        error: "Internal server error",
+      });
+    }
+  }
+);
 module.exports = connectionRequestRouter;
