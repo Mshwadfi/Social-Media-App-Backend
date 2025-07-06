@@ -6,9 +6,9 @@ const getUserConnections = async (userId) => {
     const user = await User.findById(userId);
     if (!user) return { error: "User not found" };
     const connections = await connection.find({
-      status: "accepted",
       $or: [{ user1: userId }, { user2: userId }],
     });
+
     const nieghbours = connections.map((conn) => {
       return conn.user1.toString() === userId.toString()
         ? conn.user2
@@ -23,25 +23,25 @@ const getUserConnections = async (userId) => {
 // get connections degree
 const getConnectionsDegree = async (userId, maxDegree = 3) => {
   try {
-    let visited = new Set(userId.toString());
+    let visited = new Set([userId.toString()]);
     let queue = [{ id: userId, degree: 0 }];
     let connectionDegrees = {};
     while (queue.length > 0) {
       let { id, degree } = queue.shift();
-      if (visited.has(id) || degree > maxDegree) continue;
+      if (degree >= maxDegree) continue;
 
-      const nieghbours = await getUserConnections(userId);
+      const nieghbours = await getUserConnections(id);
       if (nieghbours.error) return { error: nieghbours.error };
 
       for (let neighbour of nieghbours) {
-        if (!visited.has(neighbour)) {
+        if (!visited.has(neighbour) && neighbour !== userId.toString()) {
           visited.add(neighbour);
           queue.push({ id: neighbour, degree: degree + 1 });
+          if (!connectionDegrees[degree + 1]) {
+            connectionDegrees[degree + 1] = [];
+          }
+          connectionDegrees[degree + 1].push(neighbour);
         }
-        if (!connectionDegrees[degree + 1]) {
-          connectionDegrees[degree + 1] = [];
-        }
-        connectionDegrees[degree + 1].push(neighbour);
       }
     }
     return connectionDegrees;
@@ -49,4 +49,4 @@ const getConnectionsDegree = async (userId, maxDegree = 3) => {
     return { error: "An error occurred while fetching connections degree" };
   }
 };
-module.exports = getUserConnections;
+module.exports = { getUserConnections, getConnectionsDegree };
