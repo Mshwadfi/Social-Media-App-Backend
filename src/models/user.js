@@ -41,6 +41,12 @@ const userSchema = new mongoose.Schema(
     gender: {
       type: String,
     },
+    resetToken: {
+      type: String,
+    },
+    resetTokenExpiration: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );

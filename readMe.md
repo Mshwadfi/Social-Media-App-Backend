@@ -50,9 +50,9 @@ A complete backend API for a social media platform featuring user authentication
 | Endpoint           | Method | Description                 | Status         |
 | ------------------ | ------ | --------------------------- | -------------- |
 | `/profile`         | GET    | Get current user profile    | ✅ Done        |
-| `/users/:userId`   | GET    | Get user profile by ID      | ⬜ Not Started |
-| `/users/me`        | PUT    | Update current user profile | ⬜ Not Started |
-| `/change-password` | PUT    | Change password             | ✅ Done        |
+| `/profile/:userId` | GET    | Get user profile by ID      | ⬜ Not Started |
+| `/profile`         | PATCH  | Update current user profile | ✅ Done        |
+| `/change-password` | POST   | Change password             | ✅ Done        |
 
 ### Connections 🤝
 
