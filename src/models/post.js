@@ -20,10 +20,12 @@ const postSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  likes: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
+  likes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 postSchema.pre("validate", function (next) {
