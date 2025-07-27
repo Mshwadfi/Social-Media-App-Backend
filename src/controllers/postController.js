@@ -68,26 +68,39 @@ exports.deletePost = async (req, res) => {
 };
 
 // Like / Unlike Post
-exports.toggleLikePost = async (req, res) => {
+exports.likePost = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const post = await Post.findById(req.params.id);
+    if (!post) return res.status(404).json({ error: "Post not found" });
+    if (post.likes.includes(userId)) {
+      return res.status(400).json({ error: "Post already liked" });
+    }
+
+    post.likes.push(userId);
+    await post.save();
+    return res
+      .status(200)
+      .json({ message: "Post liked", likesCount: post.likes.length });
+  } catch (error) {
+    res.status(500).json({ error: err.message });
+  }
+};
+exports.unlikePost = async (req, res) => {
   try {
     const userId = req.user._id;
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ error: "Post not found" });
 
-    const index = post.likes?.indexOf(userId);
-    if (index === -1 || index === undefined) {
-      post.likes.push(userId);
-      await post.save();
-      return res
-        .status(200)
-        .json({ message: "Post liked", likesCount: post.likes.length });
-    } else {
-      post.likes.splice(index, 1);
-      await post.save();
-      return res
-        .status(200)
-        .json({ message: "Post unliked", likesCount: post.likes.length });
+    const idx = post.likes?.indexOf(userId);
+    if (idx === -1) {
+      return res.status(400).json({ error: "Post not liked yet" });
     }
+    post.likes.splice(idx, 1);
+    await post.save();
+    return res
+      .status(200)
+      .json({ message: "Post unliked", likesCount: post.likes.length });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
