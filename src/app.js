@@ -6,14 +6,12 @@ require("dotenv").config();
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const connectionRequestRouter = require("./routes/connectionRequest");
-const forgotPasswordRouter = require("./routes/forgotPassword");
 const postRouter = require("./routes/post");
 app.use(express.json());
 app.use(cookieParser());
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", connectionRequestRouter);
-app.use("/", forgotPasswordRouter);
 app.use("/", postRouter);
 connectDB()
   .then(() => {
