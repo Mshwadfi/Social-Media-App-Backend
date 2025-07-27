@@ -8,6 +8,10 @@ const sendEmail = require("../../utils/sendEmail");
 exports.register = async (req, res) => {
   try {
     const { email, password, firstName, lastName, age, gender } = req.body;
+    if (!email || !password || !firstName || !lastName) {
+      return res.status(400).send("Missing required fields");
+    }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(400).send("Email Already Exists");
 
