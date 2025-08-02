@@ -42,17 +42,17 @@ A complete backend API for a social media platform featuring user authentication
 | `/login`                | POST   | User login              | ✅ Done        |
 | `/auth/refresh-token`   | POST   | Refresh access token    | ⬜ Not Started |
 | `/logout`               | POST   | User logout             | ✅ Done        |
-| `/auth/forgot-password` | POST   | Initiate password reset | ⬜ Not Started |
-| `/auth/reset-password`  | POST   | Complete password reset | ⬜ Not Started |
+| `/auth/forgot-password` | POST   | Initiate password reset | ✅ Done        |
+| `/auth/reset-password`  | POST   | Complete password reset | ✅ Done        |
 
 ### User Profile 👤
 
-| Endpoint           | Method | Description                 | Status         |
-| ------------------ | ------ | --------------------------- | -------------- |
-| `/profile`         | GET    | Get current user profile    | ✅ Done        |
-| `/profile/:userId` | GET    | Get user profile by ID      | ⬜ Not Started |
-| `/profile`         | PATCH  | Update current user profile | ✅ Done        |
-| `/change-password` | POST   | Change password             | ✅ Done        |
+| Endpoint           | Method | Description                 | Status  |
+| ------------------ | ------ | --------------------------- | ------- |
+| `/profile`         | GET    | Get current user profile    | ✅ Done |
+| `/profile/:userId` | GET    | Get user profile by ID      | ✅ Done |
+| `/profile`         | PATCH  | Update current user profile | ✅ Done |
+| `/change-password` | POST   | Change password             | ✅ Done |
 
 ### Connections 🤝
 
@@ -62,23 +62,24 @@ A complete backend API for a social media platform featuring user authentication
 | `/users/me/requests/sent`              | GET    | Get sent requests         | ⬜ Not Started |
 | `/users/me/requests/received`          | GET    | Get received requests     | ⬜ Not Started |
 | `//request/:requestId/accept`          | POST   | Accept connection request | ✅ Done        |
-| `/users/me/requests/:requestId/reject` | PUT    | Reject connection request | ⬜ Not Started |
+| `/users/me/requests/:requestId/reject` | PUT    | Reject connection request | ✅ Done        |
 | `/users/me/connections`                | GET    | Get all connections       | ⬜ Not Started |
 | `/users/me/connections/:userId`        | DELETE | Remove connection         | ⬜ Not Started |
 
 ### Posts 📝
 
-| Endpoint                  | Method | Description                       | Status         |
-| ------------------------- | ------ | --------------------------------- | -------------- |
-| `/posts`                  | POST   | Create new post                   | ⬜ Not Started |
-| `/posts/me`               | GET    | Get current user's posts          | ⬜ Not Started |
-| `/posts/feed`             | GET    | Get feed posts (from connections) | ⬜ Not Started |
-| `/posts/:postId`          | GET    | Get specific post                 | ⬜ Not Started |
-| `/posts/:postId`          | PUT    | Update a post                     | ⬜ Not Started |
-| `/posts/:postId`          | DELETE | Delete a post                     | ⬜ Not Started |
-| `/posts/:postId/like`     | POST   | Like/unlike a post                | ⬜ Not Started |
-| `/posts/:postId/comment`  | POST   | Add comment to post               | ⬜ Not Started |
-| `/posts/:postId/comments` | GET    | Get post comments                 | ⬜ Not Started |
+| Endpoint                  | Method | Description              | Status         |
+| ------------------------- | ------ | ------------------------ | -------------- |
+| `/posts`                  | POST   | Create new post          | ✅ Done        |
+| `/posts/me`               | GET    | Get current user's posts | ⬜ Not Started |
+| `/posts/feed`             | GET    | Get feed posts           | ✅ Done        |
+| `/posts/:postId`          | GET    | Get specific post        | ⬜ Not Started |
+| `/posts/:postId`          | PATCH  | Update a post            | ✅ Done        |
+| `/posts/:postId`          | DELETE | Delete a post            | ✅ Done        |
+| `/posts/:postId/like`     | POST   | Like/unlike a post       | ✅ Done        |
+| `/posts/:postId/unlike`   | DELETE | Like/unlike a post       | ✅ Done        |
+| `/posts/:postId/comment`  | POST   | Add comment to post      | ⬜ Not Started |
+| `/posts/:postId/comments` | GET    | Get post comments        | ⬜ Not Started |
 
 ## Future Features 🔮
 
