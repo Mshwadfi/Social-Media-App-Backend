@@ -23,11 +23,16 @@ exports.getFeed = async (req, res) => {
       userIds.forEach((id) => allConnectedUserIds.add(id.toString()));
 
       const posts = await Post.find({ userId: { $in: userIds } }).lean();
-      const postsWithDegree = posts.map((post) => ({
-        ...post,
-        connectionDegree: numericDegree,
-        score: calculatePostScore(post, numericDegree),
-      }));
+      const postsWithDegree = posts.map((post) => {
+        Post.updateOne({ _id: post._id }, { $inc: { impressions: 1 } }).exec();
+
+        return {
+          ...post,
+          connectionDegree: numericDegree,
+          score: calculatePostScore(post, numericDegree),
+          impressions: post.impressions + 1, // todo: handle duplicate impressions => may be by creating a collection for impressions with userID
+        };
+      });
       feed = [...feed, ...postsWithDegree];
     }
 
@@ -37,12 +42,16 @@ exports.getFeed = async (req, res) => {
       $expr: { $gte: [{ $size: "$likes" }, 2000] },
     }).lean();
 
-    const popularPostsWithDegree = popularPosts.map((post) => ({
-      ...post,
-      connectionDegree: 4,
-      score: calculatePostScore(post, 4),
-      isPopular: true,
-    }));
+    const popularPostsWithDegree = popularPosts.map((post) => {
+      Post.updateOne({ _id: post._id }, { $inc: { impressions: 1 } }).exec();
+      return {
+        ...post,
+        connectionDegree: 4,
+        score: calculatePostScore(post, 4),
+        isPopular: true,
+        impressions: impressions + 1,
+      };
+    });
     feed = [...feed, ...popularPostsWithDegree];
 
     // Final sort by score

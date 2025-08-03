@@ -27,7 +27,12 @@ const postSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    impressions: {
+      type: Number,
+      default: 0,
+    },
   },
+
   { timestamps: true }
 );
 
