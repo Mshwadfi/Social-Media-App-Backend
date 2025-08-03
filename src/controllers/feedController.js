@@ -2,27 +2,58 @@ const {
   getUserConnections,
   getConnectionsDegree,
 } = require("../../utils/connectionDegrees");
+const { calculatePostScore } = require("../../utils/getPostScore");
 const Post = require("../models/post");
 
 exports.getFeed = async (req, res) => {
   try {
     const currentUser = req.user;
     let feed = [];
+
     const connectionDegrees = await getConnectionsDegree(currentUser._id);
+    const allConnectedUserIds = new Set();
+
+    // Get posts from 1st to 3rd degree connections
     for (const [degree, userIds] of Object.entries(connectionDegrees)) {
       if (!Array.isArray(userIds) || userIds.length === 0) continue;
+
+      const numericDegree = parseInt(degree);
+      if (numericDegree > 3) continue;
+
+      userIds.forEach((id) => allConnectedUserIds.add(id.toString()));
+
       const posts = await Post.find({ userId: { $in: userIds } }).lean();
-      const postsWithDegree = posts?.map((post) => ({
+      const postsWithDegree = posts.map((post) => ({
         ...post,
-        connectionDegree: parseInt(degree),
+        connectionDegree: numericDegree,
+        score: calculatePostScore(post, numericDegree),
       }));
       feed = [...feed, ...postsWithDegree];
     }
+
+    // Get popular posts from non-connections (not in 1st–3rd degree)
+    const popularPosts = await Post.find({
+      userId: { $nin: Array.from(allConnectedUserIds) },
+      $expr: { $gte: [{ $size: "$likes" }, 2000] },
+    }).lean();
+
+    const popularPostsWithDegree = popularPosts.map((post) => ({
+      ...post,
+      connectionDegree: 4,
+      score: calculatePostScore(post, 4),
+      isPopular: true,
+    }));
+    feed = [...feed, ...popularPostsWithDegree];
+
+    // Final sort by score
+    feed.sort((a, b) => b.score - a.score);
+
     return res.status(200).send({
       message: "Feed fetched successfully",
       data: feed,
     });
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error("Feed error:", error);
+    res.status(500).send({ error: error.message });
   }
 };

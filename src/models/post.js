@@ -1,32 +1,35 @@
 const { default: mongoose } = require("mongoose");
 
-const postSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    validate: {
-      validator: function (value) {
-        return mongoose.Types.ObjectId.isValid(value);
-      },
-      message: "invalid objectId for user",
-    },
-  },
-  content: {
-    type: String,
-    maxLength: 1000,
-    trim: true,
-  },
-  image: {
-    type: String,
-    trim: true,
-  },
-  likes: [
-    {
+const postSchema = new mongoose.Schema(
+  {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      required: true,
+      validate: {
+        validator: function (value) {
+          return mongoose.Types.ObjectId.isValid(value);
+        },
+        message: "invalid objectId for user",
+      },
     },
-  ],
-});
+    content: {
+      type: String,
+      maxLength: 1000,
+      trim: true,
+    },
+    image: {
+      type: String,
+      trim: true,
+    },
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
 postSchema.pre("validate", function (next) {
   if (!this.content && !this.image) {
