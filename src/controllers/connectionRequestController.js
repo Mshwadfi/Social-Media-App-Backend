@@ -2,85 +2,54 @@ const mongoose = require("mongoose");
 const ConnectionRequest = require("../models/connectionRequest");
 const User = require("../models/user");
 const Connection = require("../models/connection");
+const { asyncHandler, AppError } = require("../middlewares/errorHandler");
 
-exports.sendRequest = async (req, res) => {
-  try {
-    const { user } = req;
-    const { receiverId } = req.body;
+exports.sendRequest = asyncHandler(async (req, res, next) => {
+  const { user } = req;
+  const { receiverId } = req.body;
 
-    if (!receiverId) {
-      return res
-        .status(400)
-        .json({ success: false, error: "Receiver ID is required" });
-    }
+  if (!receiverId) throw new AppError("Receiver ID is required", 400);
 
-    if (!mongoose.Types.ObjectId.isValid(receiverId)) {
-      return res
-        .status(400)
-        .json({ success: false, error: "Invalid receiver ID format" });
-    }
+  if (!mongoose.Types.ObjectId.isValid(receiverId))
+    throw new AppError("Invalid receiver ID format", 400);
 
-    if (user._id.equals(receiverId)) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: "Cannot send connection request to yourself",
-        });
-    }
+  if (user._id.equals(receiverId))
+    throw new AppError("Cannot send connection request to yourself", 400);
 
-    const receiverExists = await User.exists({ _id: receiverId });
-    if (!receiverExists) {
-      return res
-        .status(404)
-        .json({ success: false, error: "Receiver not found" });
-    }
+  const receiverExists = await User.exists({ _id: receiverId });
+  if (!receiverExists) throw new AppError("Receiver not found", 404);
 
-    const existingRequest = await ConnectionRequest.findOne({
-      $or: [
-        { senderId: user._id, receiverId },
-        { senderId: receiverId, receiverId: user._id },
-      ],
-    });
+  const existingRequest = await ConnectionRequest.findOne({
+    $or: [
+      { senderId: user._id, receiverId },
+      { senderId: receiverId, receiverId: user._id },
+    ],
+  });
 
-    if (existingRequest) {
-      return res.status(400).json({
-        success: false,
-        error:
-          existingRequest.status === "pending"
-            ? "Connection request already pending"
-            : "You are already connected",
-      });
-    }
-
-    const request = new ConnectionRequest({
-      senderId: user._id,
-      receiverId,
-      status: "pending",
-      createdAt: new Date(),
-    });
-
-    await request.save();
-
-    return res
-      .status(201)
-      .json({
-        success: true,
-        message: "Request sent successfully",
-        data: request,
-      });
-  } catch (error) {
-    console.error("Request Error:", error);
-    return res.status(500).json({
-      success: false,
-      error: "Internal server error",
-      details:
-        process.env.NODE_ENV === "development" ? error.message : undefined,
-    });
+  if (existingRequest) {
+    throw new AppError(
+      existingRequest.status === "pending"
+        ? "Connection request already pending"
+        : "You are already connected",
+      400
+    );
   }
-};
 
-exports.acceptRequest = async (req, res) => {
+  const request = await ConnectionRequest.create({
+    senderId: user._id,
+    receiverId,
+    status: "pending",
+    createdAt: new Date(),
+  });
+
+  res.status(201).json({
+    success: true,
+    message: "Request sent successfully",
+    data: request,
+  });
+});
+
+exports.acceptRequest = asyncHandler(async (req, res, next) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
@@ -88,46 +57,24 @@ exports.acceptRequest = async (req, res) => {
     const { user } = req;
     const { id: requestId } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(requestId)) {
-      await session.abortTransaction();
-      return res
-        .status(400)
-        .json({ success: false, error: "Invalid request ID" });
-    }
+    if (!mongoose.Types.ObjectId.isValid(requestId))
+      throw new AppError("Invalid request ID", 400);
 
     const request = await ConnectionRequest.findById(requestId).session(
       session
     );
-    if (!request) {
-      await session.abortTransaction();
-      return res
-        .status(404)
-        .json({ success: false, error: "Request not found" });
-    }
+    if (!request) throw new AppError("Request not found", 404);
 
-    if (!request.receiverId.equals(user._id)) {
-      await session.abortTransaction();
-      return res
-        .status(403)
-        .json({ success: false, error: "Unauthorized action" });
-    }
+    if (!request.receiverId.equals(user._id))
+      throw new AppError("Unauthorized action", 403);
 
     const senderExists = await User.exists({ _id: request.senderId }).session(
       session
     );
-    if (!senderExists) {
-      await session.abortTransaction();
-      return res
-        .status(404)
-        .json({ success: false, error: "Sender not found" });
-    }
+    if (!senderExists) throw new AppError("Sender not found", 404);
 
-    if (request.status !== "pending") {
-      await session.abortTransaction();
-      return res
-        .status(400)
-        .json({ success: false, error: "Request has already been processed" });
-    }
+    if (request.status !== "pending")
+      throw new AppError("Request has already been processed", 400);
 
     const existingConnection = await Connection.findOne({
       $or: [
@@ -136,12 +83,8 @@ exports.acceptRequest = async (req, res) => {
       ],
     }).session(session);
 
-    if (existingConnection) {
-      await session.abortTransaction();
-      return res
-        .status(409)
-        .json({ success: false, error: "Users are already connected" });
-    }
+    if (existingConnection)
+      throw new AppError("Users are already connected", 409);
 
     const updatedRequest = await ConnectionRequest.findOneAndUpdate(
       { _id: requestId, status: "pending" },
@@ -149,95 +92,64 @@ exports.acceptRequest = async (req, res) => {
       { new: true, session }
     );
 
-    const connection = new Connection({
-      user1: request.senderId,
-      user2: request.receiverId,
-    });
+    const connection = await Connection.create(
+      [{ user1: request.senderId, user2: request.receiverId }],
+      { session }
+    );
 
-    await connection.save({ session });
     await session.commitTransaction();
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "Request accepted successfully",
-      data: { request: updatedRequest, connection },
+      data: { request: updatedRequest, connection: connection[0] },
     });
   } catch (error) {
     await session.abortTransaction();
-    console.error("Accept Error:", error);
-    return res
-      .status(500)
-      .json({ success: false, error: "Internal server error" });
+    throw error;
   } finally {
     session.endSession();
   }
-};
+});
 
-exports.rejectRequest = async (req, res) => {
-  try {
-    const { user } = req;
-    const { id: requestId } = req.params;
+exports.rejectRequest = asyncHandler(async (req, res, next) => {
+  const { user } = req;
+  const { id: requestId } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(requestId)) {
-      return res
-        .status(400)
-        .json({ success: false, error: "Invalid request ID" });
-    }
+  if (!mongoose.Types.ObjectId.isValid(requestId))
+    throw new AppError("Invalid request ID", 400);
 
-    const request = await ConnectionRequest.findById(requestId);
-    if (!request) {
-      return res
-        .status(404)
-        .json({ success: false, error: "Request not found" });
-    }
+  const request = await ConnectionRequest.findById(requestId);
+  if (!request) throw new AppError("Request not found", 404);
 
-    if (!request.receiverId.equals(user._id)) {
-      return res
-        .status(403)
-        .json({ success: false, error: "Unauthorized action" });
-    }
+  if (!request.receiverId.equals(user._id))
+    throw new AppError("Unauthorized action", 403);
 
-    const senderExists = await User.exists({ _id: request.senderId });
-    if (!senderExists) {
-      return res
-        .status(404)
-        .json({ success: false, error: "Sender not found" });
-    }
+  const senderExists = await User.exists({ _id: request.senderId });
+  if (!senderExists) throw new AppError("Sender not found", 404);
 
-    if (request.status !== "pending") {
-      return res
-        .status(400)
-        .json({ success: false, error: "Request has already been processed" });
-    }
+  if (request.status !== "pending")
+    throw new AppError("Request has already been processed", 400);
 
-    const existingConnection = await Connection.findOne({
-      $or: [
-        { user1: request.senderId, user2: request.receiverId },
-        { user1: request.receiverId, user2: request.senderId },
-      ],
-    });
+  const existingConnection = await Connection.findOne({
+    $or: [
+      { user1: request.senderId, user2: request.receiverId },
+      { user1: request.receiverId, user2: request.senderId },
+    ],
+  });
 
-    if (existingConnection) {
-      return res
-        .status(409)
-        .json({ success: false, error: "Users are already connected" });
-    }
+  if (existingConnection)
+    throw new AppError("Users are already connected", 409);
 
-    const updatedRequest = await ConnectionRequest.findOneAndUpdate(
-      { _id: requestId, status: "pending" },
-      { status: "rejected" },
-      { new: true }
-    );
+  const updatedRequest = await ConnectionRequest.findOneAndUpdate(
+    { _id: requestId, status: "pending" },
+    { status: "rejected" },
+    { new: true }
+  );
 
-    return res.status(200).json({
-      success: true,
-      message: "Request rejected successfully",
-      data: { request: updatedRequest },
-    });
-  } catch (error) {
-    console.error("Reject Error:", error);
-    return res
-      .status(500)
-      .json({ success: false, error: "Internal server error" });
-  }
-};
+  res.status(200).json({
+    success: true,
+    message: "Request rejected successfully",
+    data: { request: updatedRequest },
+  });
+});

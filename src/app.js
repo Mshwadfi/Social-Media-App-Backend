@@ -9,6 +9,7 @@ const profileRouter = require("./routes/profile");
 const connectionRequestRouter = require("./routes/connectionRequest");
 const postRouter = require("./routes/post");
 const feedRouter = require("./routes/feed");
+const { globalErrorHandler } = require("./middlewares/errorHandler");
 app.use(express.json());
 app.use(cookieParser());
 app.use("/", authRouter);
@@ -16,6 +17,7 @@ app.use("/", profileRouter);
 app.use("/", connectionRequestRouter);
 app.use("/", postRouter);
 app.use("/", feedRouter);
+app.use(globalErrorHandler);
 connectDB()
   .then(() => {
     console.log("connected to db!");

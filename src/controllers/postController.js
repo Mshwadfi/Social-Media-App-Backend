@@ -1,107 +1,87 @@
+const { asyncHandler, AppError } = require("../middlewares/errorHandler");
 const Post = require("../models/post");
 
 // Create Post
-exports.createPost = async (req, res) => {
-  try {
-    const { content, image } = req.body;
-    const userId = req.user._id;
-    if (!userId) return res.status(401).send("Unauthorized");
+exports.createPost = asyncHandler(async (req, res, next) => {
+  const { content, image } = req.body;
+  const userId = req.user._id;
+  if (!userId) return next(new AppError("Unauthorized", 401));
 
-    const post = new Post({ userId, content, image });
-    await post.save();
-    res.status(201).json(post);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-};
+  const post = new Post({ userId, content, image });
+  await post.save();
+  res.status(201).json(post);
+});
 
 // Update Post
-exports.updatePost = async (req, res) => {
-  try {
-    const { content, image } = req.body;
-    const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ error: "Post not found" });
+exports.updatePost = asyncHandler(async (req, res, next) => {
+  const { content, image } = req.body;
+  const post = await Post.findById(req.params.id);
+  if (!post) return next(new AppError("Post not found", 404));
 
-    if (String(post.userId) !== req.user._id.toString()) {
-      return res.status(403).json({ error: "Unauthorized" });
-    }
-
-    post.content = content || post.content;
-    post.image = image || post.image;
-    await post.save();
-    res.status(200).json(post);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  if (String(post.userId) !== req.user._id.toString()) {
+    return next(new AppError("Unauthorized", 403));
   }
-};
+
+  post.content = content || post.content;
+  post.image = image || post.image;
+  await post.save();
+  res.status(200).json(post);
+});
 
 // Get Post by ID
-exports.getPostById = async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id).populate(
-      "userId",
-      "username"
-    );
-    if (!post) return res.status(404).json({ error: "Post not found" });
+exports.getPostById = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.params.id).populate(
+    "userId",
+    "username"
+  );
+  if (!post) return next(new AppError("Post not found", 404));
 
-    res.status(200).json(post);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+  res.status(200).json(post);
+});
 
 // Delete Post
-exports.deletePost = async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ error: "Post not found" });
+exports.deletePost = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.params.id);
+  if (!post) return next(new AppError("Post not found", 404));
 
-    if (String(post.userId) !== req.user._id.toString()) {
-      return res.status(403).json({ error: "Unauthorized" });
-    }
-
-    await post.deleteOne();
-    res.status(200).json({ message: "Post deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  if (String(post.userId) !== req.user._id.toString()) {
+    return next(new AppError("Unauthorized", 403));
   }
-};
 
-// Like / Unlike Post
-exports.likePost = async (req, res) => {
-  try {
-    const userId = req.user._id;
-    const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ error: "Post not found" });
-    if (post.likes.includes(userId)) {
-      return res.status(400).json({ error: "Post already liked" });
-    }
+  await post.deleteOne();
+  res.status(200).json({ message: "Post deleted successfully" });
+});
 
-    post.likes.push(userId);
-    await post.save();
-    return res
-      .status(200)
-      .json({ message: "Post liked", likesCount: post.likes.length });
-  } catch (error) {
-    res.status(500).json({ error: err.message });
+// Like Post
+exports.likePost = asyncHandler(async (req, res, next) => {
+  const userId = req.user._id;
+  const post = await Post.findById(req.params.id);
+  if (!post) return next(new AppError("Post not found", 404));
+  if (post.likes.includes(userId)) {
+    return next(new AppError("Post already liked", 400));
   }
-};
-exports.unlikePost = async (req, res) => {
-  try {
-    const userId = req.user._id;
-    const post = await Post.findById(req.params.id);
-    if (!post) return res.status(404).json({ error: "Post not found" });
 
-    const idx = post.likes?.indexOf(userId);
-    if (idx === -1) {
-      return res.status(400).json({ error: "Post not liked yet" });
-    }
-    post.likes.splice(idx, 1);
-    await post.save();
-    return res
-      .status(200)
-      .json({ message: "Post unliked", likesCount: post.likes.length });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  post.likes.push(userId);
+  await post.save();
+  res
+    .status(200)
+    .json({ message: "Post liked", likesCount: post.likes.length });
+});
+
+// Unlike Post
+exports.unlikePost = asyncHandler(async (req, res, next) => {
+  const userId = req.user._id;
+  const post = await Post.findById(req.params.id);
+  if (!post) return next(new AppError("Post not found", 404));
+
+  const idx = post.likes?.indexOf(userId);
+  if (idx === -1) {
+    return next(new AppError("Post not liked yet", 400));
   }
-};
+
+  post.likes.splice(idx, 1);
+  await post.save();
+  res
+    .status(200)
+    .json({ message: "Post unliked", likesCount: post.likes.length });
+});

@@ -13,8 +13,8 @@ const asyncHandler = (fn) => (req, res, next) =>
 const globalErrorHandler = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
-
-  if (process.env.NODE_ENV == 500) {
+  console.log(process.env.NODE_ENV == "development");
+  if (process.env.NODE_ENV == "development") {
     res.status(err.statusCode).json({
       status: err.status,
       message: err.message,
@@ -24,7 +24,9 @@ const globalErrorHandler = (err, req, res, next) => {
   } else {
     res.status(err.statusCode).json({
       status: err.status,
-      message: isOperational ? err.message : "Internal Server Error",
+      message: err.isOperational ? err.message : "Internal Server Error",
     });
   }
 };
+
+module.exports = { asyncHandler, AppError, globalErrorHandler };
