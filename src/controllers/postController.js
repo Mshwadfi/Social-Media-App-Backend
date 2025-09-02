@@ -3,23 +3,31 @@ const Post = require("../models/post");
 
 // Create Post
 exports.createPost = asyncHandler(async (req, res, next) => {
-  const { content, image } = req.body;
+  const { content } = req.body;
   const userId = req.user._id;
   if (!userId) return next(new AppError("Unauthorized", 401));
 
-  const post = new Post({ userId, content, image });
+  let imageUrl = null;
+  if (req.file && req.file.path) {
+    imageUrl = req.file.path; // Cloudinary URL
+  }
+  const post = new Post({ userId, content, image: imageUrl });
   await post.save();
   res.status(201).json(post);
 });
 
 // Update Post
 exports.updatePost = asyncHandler(async (req, res, next) => {
-  const { content, image } = req.body;
+  const { content } = req.body;
   const post = await Post.findById(req.params.id);
   if (!post) return next(new AppError("Post not found", 404));
 
   if (String(post.userId) !== req.user._id.toString()) {
     return next(new AppError("Unauthorized", 403));
+  }
+  let image = post.image;
+  if (req.file && req.file.path) {
+    image = req.file.path;
   }
 
   post.content = content || post.content;

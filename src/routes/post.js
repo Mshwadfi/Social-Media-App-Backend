@@ -9,11 +9,17 @@ const {
   likePost,
   unlikePost,
 } = require("../controllers/postController");
+const upload = require("../middlewares/uploadFile");
 
 const postRouter = express.Router();
 
-postRouter.post("/post", authMiddleWare, createPost);
-postRouter.patch("/post/:id", authMiddleWare, updatePost);
+postRouter.post("/post", authMiddleWare, upload.single("image"), createPost);
+postRouter.patch(
+  "/post/:id",
+  authMiddleWare,
+  upload.single("image"),
+  updatePost
+);
 postRouter.get("/post/:id", getPostById);
 postRouter.delete("/post/:id", authMiddleWare, deletePost);
 postRouter.post("/post/:id/like", authMiddleWare, likePost);
