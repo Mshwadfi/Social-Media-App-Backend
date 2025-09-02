@@ -10,8 +10,13 @@ const connectionRequestRouter = require("./routes/connectionRequest");
 const postRouter = require("./routes/post");
 const feedRouter = require("./routes/feed");
 const { globalErrorHandler } = require("./middlewares/errorHandler");
+const {
+  moderateLimiter,
+  rateLimiterMiddleware,
+} = require("./middlewares/rateLimiter");
 app.use(express.json());
 app.use(cookieParser());
+app.use(rateLimiterMiddleware(moderateLimiter));
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", connectionRequestRouter);
