@@ -14,6 +14,7 @@ const {
   moderateLimiter,
   rateLimiterMiddleware,
 } = require("./middlewares/rateLimiter");
+const paymentRouter = require("./routes/payment");
 app.use(express.json());
 app.use(cookieParser());
 app.use(rateLimiterMiddleware(moderateLimiter));
@@ -22,6 +23,7 @@ app.use("/", profileRouter);
 app.use("/", connectionRequestRouter);
 app.use("/", postRouter);
 app.use("/", feedRouter);
+app.use("/", paymentRouter);
 app.use(globalErrorHandler);
 connectDB()
   .then(() => {
