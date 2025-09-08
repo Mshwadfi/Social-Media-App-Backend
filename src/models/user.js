@@ -41,6 +41,10 @@ const userSchema = new mongoose.Schema(
     gender: {
       type: String,
     },
+    isPremuim: {
+      type: Boolean,
+      default: false,
+    },
     resetToken: {
       type: String,
     },
