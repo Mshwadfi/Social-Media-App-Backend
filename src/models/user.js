@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema(
     gender: {
       type: String,
     },
-    isPremuim: {
+    isPremium: {
       type: Boolean,
       default: false,
     },
