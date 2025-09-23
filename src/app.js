@@ -1,6 +1,7 @@
 const express = require("express");
 const connectDB = require("./config/database");
 const app = express();
+const { createServer } = require("http");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 require("../utils/cronJob");
@@ -15,6 +16,7 @@ const {
   rateLimiterMiddleware,
 } = require("./middlewares/rateLimiter");
 const paymentRouter = require("./routes/payment");
+const setupSocketIO = require("./config/socketIO");
 app.use(express.json());
 app.use(cookieParser());
 app.use(rateLimiterMiddleware(moderateLimiter));
@@ -25,10 +27,14 @@ app.use("/", postRouter);
 app.use("/", feedRouter);
 app.use("/", paymentRouter);
 app.use(globalErrorHandler);
+
+const server = createServer(app);
+setupSocketIO(server);
+
 connectDB()
   .then(() => {
     console.log("connected to db!");
-    app.listen(4000, () => {
+    server.listen(4000, () => {
       console.log("server is running on port 4000");
     });
   })
