@@ -10,7 +10,7 @@ const rl = readline.createInterface({
 const socket = io("http://localhost:4000", {
   auth: {
     token:
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFobWVkZW1hZEBnc3Nkc21haWwuY29tIiwiX2lkIjoiNjg1ODA4MzU3ODg0NjUxNzQzODdlNGQ5IiwiaWF0IjoxNzU4NzE5NDMzLCJleHAiOjE3NTkzMjQyMzN9.4GV4GQevC0GFvZzYqpO8Ux0ZI16NExxTEC4R4HXrJb4",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vaGFtZWRhbHNod2FkZnkyNEBnbWFpbC5jb20iLCJfaWQiOiI2ODU0NjcyZDFiMjBiNDUwNTUyZTQwNzciLCJpYXQiOjE3NTg3MzgyNjgsImV4cCI6MTc1OTM0MzA2OH0.ZnY9X9R5Eh3ve1pqOKO1N8k4r9PvWzsKR3UR10_OXTk",
   },
 });
 
@@ -21,14 +21,14 @@ socket.on("connect", () => {
   console.log("✅ Connected to server:", socket.id);
 
   // Join room
+  //   socket.emit("joinchat", { roomId });
+  //   console.log(`🟢 Joined room: ${roomId}`);
+
   socket.on("roomcreated", ({ roomId: newRoomId }) => {
-    roomId = newRoomId; // 👈 save globally
+    roomId = newRoomId;
     socket.emit("joinchat", { roomId: newRoomId });
     console.log(`🟢 Joined room: ${newRoomId}`);
   });
-
-  // socket.emit("joinchat", { roomId });
-  // console.log(`🟢 Joined room: ${roomId}`);
 
   // Prompt user for input
   rl.setPrompt("💬 Enter message: ");
@@ -38,7 +38,7 @@ socket.on("connect", () => {
     const message = {
       roomId,
       text: line.trim(),
-      recieverId: "6854672d1b20b450552e4077",
+      recieverId: "68580835788465174387e4d9",
     };
 
     socket.emit("sendmessage", message);
@@ -48,7 +48,6 @@ socket.on("connect", () => {
 
 socket.on("receivemessage", (msg) => {
   console.log(`\n📩 ${msg.senderId.firstName}: ${msg.text}`);
-  console.log(`😂 ${msg}`);
   rl.prompt();
 });
 
