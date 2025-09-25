@@ -18,9 +18,11 @@ const {
 const paymentRouter = require("./routes/payment");
 const setupSocketIO = require("./config/socketIO");
 const chatRouter = require("./routes/chat");
+const { requestLogger } = require("./middlewares/loggerMiddleware");
 app.use(express.json());
 app.use(cookieParser());
 app.use(rateLimiterMiddleware(moderateLimiter));
+app.use(requestLogger);
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", connectionRequestRouter);
