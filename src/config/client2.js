@@ -30,6 +30,14 @@ socket.on("connect", () => {
     console.log(`🟢 Joined room: ${newRoomId}`);
   });
 
+  socket.on("unreadmessages", (messages) => {
+    console.log("📥 You have unread messages:");
+    messages.forEach((msg) => {
+      console.log(`\n📩 ${msg.senderId.firstName}: ${msg.text}`);
+    });
+    rl.prompt();
+  });
+
   // Prompt user for input
   rl.setPrompt("💬 Enter message: ");
   rl.prompt();

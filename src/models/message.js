@@ -13,7 +13,8 @@ const messageSchema = new mongoose.Schema(
       required: true,
     },
     text: { type: String, required: true, maxlength: 1000 },
-    readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    // readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    status: { type: String, default: "sent" },
   },
   { timestamps: true }
 );

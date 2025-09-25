@@ -39,6 +39,23 @@ const setupSocketIO = (httpServer) => {
 
       socket.join(roomId);
       console.log(`User: ${socket.user._id} joined room: ${roomId}`);
+      // send unread msgs to users
+      const unreadMessages = await message
+        .find({
+          roomId,
+          status: "sent",
+          senderId: { $ne: socket.user._id }, // exclude own messages
+        })
+        .populate("senderId", "firstName lastName");
+
+      if (unreadMessages.length > 0) {
+        socket.emit("unreadmessages", unreadMessages);
+
+        await message.updateMany(
+          { _id: { $in: unreadMessages.map((m) => m._id) } },
+          { $set: { status: "delivered" } }
+        );
+      }
     });
 
     // 🔹 Send message
@@ -85,6 +102,7 @@ const setupSocketIO = (httpServer) => {
 
       // Broadcast to room
       io.to(roomId).emit("receivemessage", populatedMsg);
+      await message.findByIdAndUpdate(msg._id, { status: "delivered" });
 
       console.log(`💬 ${text} sent to room: ${roomId} by user: ${senderId}`);
     });
