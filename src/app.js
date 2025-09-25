@@ -17,6 +17,7 @@ const {
 } = require("./middlewares/rateLimiter");
 const paymentRouter = require("./routes/payment");
 const setupSocketIO = require("./config/socketIO");
+const chatRouter = require("./routes/chat");
 app.use(express.json());
 app.use(cookieParser());
 app.use(rateLimiterMiddleware(moderateLimiter));
@@ -26,6 +27,7 @@ app.use("/", connectionRequestRouter);
 app.use("/", postRouter);
 app.use("/", feedRouter);
 app.use("/", paymentRouter);
+app.use("/", chatRouter);
 app.use(globalErrorHandler);
 
 const server = createServer(app);

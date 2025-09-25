@@ -44,24 +44,18 @@ const setupSocketIO = (httpServer) => {
         .find({
           roomId,
           status: "sent",
-          senderId: { $ne: socket.user._id }, // exclude own messages
+          senderId: { $ne: socket.user._id },
         })
         .populate("senderId", "firstName lastName");
-
+      console.log("unread: ", unreadMessages);
       if (unreadMessages.length > 0) {
         socket.emit("unreadmessages", unreadMessages);
-
-        await message.updateMany(
-          { _id: { $in: unreadMessages.map((m) => m._id) } },
-          { $set: { status: "delivered" } }
-        );
       }
     });
 
     // 🔹 Send message
     socket.on("sendmessage", async ({ roomId, text, recieverId }) => {
       const senderId = socket.user._id;
-      console.log(roomId, text);
 
       if (!text || !recieverId) {
         return socket.emit("error", { message: "Invalid data" });
@@ -101,10 +95,14 @@ const setupSocketIO = (httpServer) => {
       const populatedMsg = await msg.populate("senderId", "firstName lastName");
 
       // Broadcast to room
-      io.to(roomId).emit("receivemessage", populatedMsg);
-      await message.findByIdAndUpdate(msg._id, { status: "delivered" });
+      socket.to(roomId).emit("receivemessage", populatedMsg);
 
       console.log(`💬 ${text} sent to room: ${roomId} by user: ${senderId}`);
+    });
+
+    socket.on("messagedelivered", async ({ messageId }) => {
+      await message.findByIdAndUpdate(messageId, { status: "delivered" });
+      console.log(`✅ Message ${messageId} marked as delivered`);
     });
 
     socket.on("disconnect", () => {

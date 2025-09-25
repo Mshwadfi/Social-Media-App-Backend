@@ -15,12 +15,14 @@ const socket = io("http://localhost:4000", {
 });
 
 // creat simple roomid: we need to change this later with some thing robust maybe uuid
-let roomId;
+let roomId = "68d40e1ce0abd6659508feb6";
 
 socket.on("connect", () => {
   console.log("✅ Connected to server:", socket.id);
 
   // Join room
+  socket.emit("joinchat", { roomId });
+
   socket.on("roomcreated", ({ roomId: newRoomId }) => {
     roomId = newRoomId; // 👈 save globally
     socket.emit("joinchat", { roomId: newRoomId });
@@ -55,6 +57,8 @@ socket.on("connect", () => {
 
 socket.on("receivemessage", (msg) => {
   console.log(`\n📩 ${msg.senderId.firstName}: ${msg.text}`);
+  socket.emit("messagedelivered", { messageId: msg._id });
+
   console.log(`😂 ${msg}`);
   rl.prompt();
 });
