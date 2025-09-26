@@ -1,3 +1,5 @@
+const { logger } = require("./loggerMiddleware");
+
 class AppError extends Error {
   constructor(message, statusCode) {
     super(message);
@@ -14,6 +16,20 @@ const globalErrorHandler = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "error";
   console.log(process.env.NODE_ENV == "development");
+
+  logger.error({
+    message: err.message,
+    stack: err.stack,
+    statusCode: err.statusCode,
+    isOperational: err.isOperational,
+    method: req.method,
+    url: req.originalUrl,
+    body: req.body,
+    params: req.params,
+    query: req.query,
+    userId: req.user ? req.user._id : "guest",
+  });
+
   if (process.env.NODE_ENV == "development") {
     res.status(err.statusCode).json({
       status: err.status,
