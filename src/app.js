@@ -32,6 +32,11 @@ app.use("/", paymentRouter);
 app.use("/", chatRouter);
 app.use(globalErrorHandler);
 
+// testing docker in dev
+app.get("/sayhi", (req, res) => {
+  res.send("Hello from /sayhi 🚀");
+});
+
 const server = createServer(app);
 setupSocketIO(server);
 

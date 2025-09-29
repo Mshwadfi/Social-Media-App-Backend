@@ -1,0 +1,52 @@
+# version: "3.7"
+
+services:
+  app:
+    container_name: social
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongodb:27017
+      - REDIS_URL=redis://redis:6379
+      - PORT=4000
+    env_file:
+      - ./.env
+    depends_on:
+      - mongodb
+      - redis
+
+    networks:
+      - social-network
+
+  mongodb:
+    container_name: mongodb-social
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - social-network
+  redis:
+    container_name: redis-social
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - social-network
+
+networks:
+  social-network:
+    driver: bridge
+
+volumes:
+  mongodb-data:
+  redis-data:

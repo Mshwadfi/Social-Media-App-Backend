@@ -1,9 +1,8 @@
 const Redis = require("ioredis");
 
-// Defaults to localhost:6379
 const redis = new Redis({
-  host: "127.0.0.1",
-  port: 6379,
+  host: process.env.REDIS_HOST || "redis", // docker service name for redis is "redis"
+  port: process.env.REDIS_PORT || 6379,
 });
 
 redis.on("connect", () => {
