@@ -1,8 +1,14 @@
-const { getConnectionsDegree } = require("../../utils/connectionDegrees");
+const {
+  getConnectionDegreeBetweenUsers,
+} = require("../../utils/connectionDegrees");
 const { calculatePostScore } = require("../../utils/getPostScore");
-const { MAX_CONNECTION_DEGREE } = require("../config/constants");
+const {
+  MAX_CONNECTION_DEGREE,
+  POPULAR_THRESHOLD,
+} = require("../config/constants");
 const { asyncHandler, AppError } = require("../middlewares/errorHandler");
 const Post = require("../models/post");
+const User = require("../models/user");
 
 exports.getFeed = asyncHandler(async (req, res, next) => {
   const currentUser = req.user;
@@ -13,79 +19,111 @@ exports.getFeed = asyncHandler(async (req, res, next) => {
 
   const cursor = req.query.cursor || null;
 
-  let feed = [];
-
-  const connectionDegrees = await getConnectionsDegree(
-    currentUser._id,
-    MAX_CONNECTION_DEGREE
-  );
-  const allConnectedUserIds = new Set();
-
-  // Get posts from connections
-  for (const [degree, userIds] of Object.entries(connectionDegrees)) {
-    if (!Array.isArray(userIds) || userIds.length === 0) continue;
-
-    const numericDegree = parseInt(degree, 10);
-    if (numericDegree > MAX_CONNECTION_DEGREE) continue;
-
-    userIds.forEach((id) => allConnectedUserIds.add(id.toString()));
-
-    const posts = await Post.find({ userId: { $in: userIds } }).lean();
-    const postsWithDegree = posts.map((post) => ({
-      ...post,
-      connectionDegree: numericDegree,
-      score: calculatePostScore(post, numericDegree),
-      impressions: post.impressions || 0,
-    }));
-    feed.push(...postsWithDegree);
-  }
-
-  // Get popular posts from non-connections
-  const popularPosts = await Post.find({
-    userId: { $nin: Array.from(allConnectedUserIds) },
-    $expr: { $gte: [{ $size: "$likes" }, 2000] },
-  }).lean();
-
-  feed.push(
-    ...popularPosts.map((post) => ({
-      ...post,
-      connectionDegree: 4,
-      score: calculatePostScore(post, 4),
-      isPopular: true,
-      impressions: post.impressions || 0,
-    }))
-  );
-
-  // Sort
-  feed.sort((a, b) => b.score - a.score);
-
-  // Cursor pagination
-  let cursorIndex = 0;
+  const query = {};
   if (cursor) {
-    cursorIndex = feed.findIndex((post) => post._id.toString() === cursor);
-    if (cursorIndex === -1) cursorIndex = 0;
-    else cursorIndex += 1;
+    const cursorPost = await Post.findById(cursor)
+      .select("score createdAt")
+      .lean();
+    if (cursorPost) {
+      query.createdAt = { $lt: cursorPost.createdAt };
+    }
   }
 
-  const paginatedFeed = feed.slice(cursorIndex, cursorIndex + limit);
+  // fetch suffecient amount of posts and process it
+  const fetchLimit = limit * 5;
 
-  // Update impressions only for returned posts
-  for (const post of paginatedFeed) {
-    await Post.updateOne(
-      { _id: post._id },
+  const recentPosts = await Post.find(query)
+    .sort({ createdAt: -1 })
+    .limit(fetchLimit)
+    .select("userId likes createdAt content impressions")
+    .lean();
+
+  if (recentPosts.length === 0) {
+    return res.status(200).send({
+      message: "Feed fetched successfully",
+      data: [],
+      nextCursor: null,
+    });
+  }
+
+  // get unique users so we loop over them to return posts with connection degree
+  // this enhances the performance as (single user my have many posts) and we process them in a single step
+  // doing this run on O(Pots + Users * N^2) => n^2 is the time complexity for the getConnectionDegreeBetweenUsers
+  // so doing this between userId from unique users & logged in userId is way faster than doing same between
+  // logged in userId and post.userId
+
+  const uniqueUserIds = [
+    ...new Set(recentPosts.map((p) => p.userId.toString())),
+  ];
+
+  // Calculate connection degrees for unique users only
+  const userConnectionMap = new Map();
+
+  await Promise.all(
+    uniqueUserIds.map(async (userId) => {
+      // Check cache first
+
+      const degree = await getConnectionDegreeBetweenUsers(
+        currentUser._id,
+        userId,
+        MAX_CONNECTION_DEGREE
+      );
+
+      userConnectionMap.set(userId, degree);
+
+      // Cache the result
+    })
+  );
+
+  const feed = recentPosts
+    .map((post) => {
+      const degree = userConnectionMap.get(post.userId.toString());
+
+      let finalDegree = degree;
+      let isPopular = false;
+
+      if (degree === null) {
+        const likesCount = post.likes?.length || 0;
+        if (likesCount >= POPULAR_THRESHOLD) {
+          finalDegree = 4;
+          isPopular = true;
+        } else {
+          return null; // make it null so we filter it out later
+        }
+      }
+
+      return {
+        ...post,
+        connectionDegree: finalDegree,
+        score: calculatePostScore(post, finalDegree),
+        isPopular,
+        impressions: post.impressions || 0,
+      };
+    })
+    .filter((post) => post !== null)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
+
+  // batch update impressions
+  if (feed.length > 0) {
+    const postIds = feed.map((post) => post._id);
+
+    await Post.updateMany(
+      { _id: { $in: postIds } },
       { $inc: { impressions: 1 } }
-    ).exec();
-    post.impressions += 1;
+    );
+
+    feed.forEach((post) => {
+      post.impressions += 1;
+    });
   }
 
   const nextCursor =
-    paginatedFeed.length > 0
-      ? paginatedFeed[paginatedFeed.length - 1]._id.toString()
-      : null;
+    feed.length > 0 ? feed[feed.length - 1]._id.toString() : null;
 
   return res.status(200).send({
     message: "Feed fetched successfully",
-    data: paginatedFeed,
+    data: feed,
     nextCursor,
   });
 });

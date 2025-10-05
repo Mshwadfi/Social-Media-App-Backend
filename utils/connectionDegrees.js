@@ -9,44 +9,93 @@ const getUserConnections = async (userId) => {
       $or: [{ user1: userId }, { user2: userId }],
     });
 
-    const nieghbours = connections.map((conn) => {
+    const neighbours = connections.map((conn) => {
       return conn.user1.toString() === userId.toString()
         ? conn.user2
         : conn.user1;
     });
-    return [...new Set(nieghbours)].map((id) => id.toString());
+    return [...new Set(neighbours)].map((id) => id.toString());
   } catch (error) {
     return { error: "An error occurred while fetching connections" };
   }
 };
 
-// get connections degree
-const getConnectionsDegree = async (userId, maxDegree = 3) => {
+// Bidirectional BFS to find shortest path between two users
+const getConnectionDegreeBetweenUsers = async (
+  userId1,
+  userId2,
+  maxDegree = 3
+) => {
   try {
-    let visited = new Set([userId.toString()]);
-    let queue = [{ id: userId, degree: 0 }];
-    let connectionDegrees = {};
-    while (queue.length > 0) {
-      let { id, degree } = queue.shift();
-      if (degree >= maxDegree) continue;
+    const user1Str = userId1.toString();
+    const user2Str = userId2.toString();
+    const searchDepth = Math.ceil(maxDegree / 2);
 
-      const nieghbours = await getUserConnections(id);
-      if (nieghbours.error) return { error: nieghbours.error };
+    if (user1Str === user2Str) return 0;
 
-      for (let neighbour of nieghbours) {
-        if (!visited.has(neighbour) && neighbour !== userId.toString()) {
-          visited.add(neighbour);
-          queue.push({ id: neighbour, degree: degree + 1 });
-          if (!connectionDegrees[degree + 1]) {
-            connectionDegrees[degree + 1] = [];
+    // start bfs from both sides: source and destination
+    // i think we can find a solution using single map!
+
+    let visitedFromStart = new Map([[user1Str, 0]]);
+    let visitedFromEnd = new Map([[user2Str, 0]]);
+
+    let queueStart = [{ id: user1Str, degree: 0 }];
+    let queueEnd = [{ id: user2Str, degree: 0 }];
+
+    // go both directions
+    while (queueStart.length > 0 || queueEnd.length > 0) {
+      if (queueStart.length > 0) {
+        const { id, degree } = queueStart.shift();
+
+        if (degree >= searchDepth) continue;
+
+        const neighbours = await getUserConnections(id);
+        if (neighbours.error) return null;
+
+        for (let neighbour of neighbours) {
+          // check if we met in the middle
+          if (visitedFromEnd.has(neighbour)) {
+            return degree + 1 + visitedFromEnd.get(neighbour);
           }
-          connectionDegrees[degree + 1].push(neighbour);
+
+          if (!visitedFromStart.has(neighbour)) {
+            visitedFromStart.set(neighbour, degree + 1);
+            queueStart.push({ id: neighbour, degree: degree + 1 });
+          }
+        }
+      }
+
+      if (queueEnd.length > 0) {
+        const { id, degree } = queueEnd.shift();
+
+        if (degree >= searchDepth) continue;
+
+        const neighbours = await getUserConnections(id);
+        if (neighbours.error) return null;
+
+        for (let neighbour of neighbours) {
+          // check if we met in the middle
+          if (visitedFromStart.has(neighbour)) {
+            return degree + 1 + visitedFromStart.get(neighbour);
+          }
+
+          if (!visitedFromEnd.has(neighbour)) {
+            visitedFromEnd.set(neighbour, degree + 1);
+            queueEnd.push({ id: neighbour, degree: degree + 1 });
+          }
         }
       }
     }
-    return connectionDegrees;
+
+    // no connection found within maxDegree
+    return null;
   } catch (error) {
-    return { error: "An error occurred while fetching connections degree" };
+    console.error("Error in getConnectionDegreeBetweenUsers:", error);
+    return null;
   }
 };
-module.exports = { getUserConnections, getConnectionsDegree };
+
+module.exports = {
+  getUserConnections,
+  getConnectionDegreeBetweenUsers,
+};

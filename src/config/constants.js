@@ -1,1 +1,2 @@
 export const MAX_CONNECTION_DEGREE = 3;
+export const POPULAR_THRESHOLD = 2000;
